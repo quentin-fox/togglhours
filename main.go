@@ -41,18 +41,18 @@ func main() {
 
 		dur := stop.Sub(start).Hours() // already rounded
 
-		startDate := start.Format("2006-01-02")
+		taskStartDate := start.Format("2006-01-02")
 
-		dayWork := daysWork[startDate]
+		dayWork := daysWork[taskStartDate]
 
 		if dayWork == nil { // null pointer
-			daysWork[startDate] = &DayWork{
+			daysWork[taskStartDate] = &DayWork{
 				StartTime:    start,
 				Descriptions: []string{t.Description},
 				Hours:        []float64{dur},
 			}
 
-			days = append(days, startDate)
+			days = append(days, taskStartDate)
 		} else {
 			var descChanged bool
 			for _, desc := range dayWork.Descriptions {
@@ -115,9 +115,9 @@ func getDates(args []string) (time.Time, time.Time) {
 		log.Fatalf("could not parse start date: %v", err)
 	}
 
-	endDate, err := time.Parse(inputDateFormat, endStr)
-
 	endStr += " " + zone
+
+	endDate, err := time.Parse(inputDateFormat, endStr)
 
 	if err != nil {
 		log.Fatalf("could not parse end date: %v", err)
