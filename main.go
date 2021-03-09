@@ -13,6 +13,8 @@ import (
 
 var apiToken string = os.Getenv("TOGGL_KEY")
 
+const inputDateFormat string = "2006-01-02 MST"
+
 type DayWork struct {
 	StartTime    time.Time
 	StopTime     time.Time
@@ -95,6 +97,8 @@ func main() {
 func getDates(args []string) (time.Time, time.Time) {
 	startStr, endStr := os.Args[1], os.Args[2]
 
+	zone, _ := time.Now().Zone();
+
 	if startStr == "" {
 		log.Fatal("you must enter a start date")
 	}
@@ -103,13 +107,17 @@ func getDates(args []string) (time.Time, time.Time) {
 		log.Fatal("you must enter an end date")
 	}
 
-	startDate, err := time.Parse("2006-01-02", startStr)
+	startStr += " " + zone
+
+	startDate, err := time.Parse(inputDateFormat, startStr)
 
 	if err != nil {
 		log.Fatalf("could not parse start date: %v", err)
 	}
 
-	endDate, err := time.Parse("2006-01-02", endStr)
+	endDate, err := time.Parse(inputDateFormat, endStr)
+
+	endStr += " " + zone
 
 	if err != nil {
 		log.Fatalf("could not parse end date: %v", err)
